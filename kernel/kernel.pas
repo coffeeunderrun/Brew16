@@ -1,34 +1,32 @@
-program Kernel;
+unit Kernel;
 
-procedure SetVideoMode(Mode: Byte); register; assembler; nostackframe; inline;
-asm
-    xor ah, ah
-    int $10
-end;
+interface
 
-procedure WriteChar(C: Char); register; assembler; nostackframe; inline;
-asm
-    mov ah, $0E
-    int $10
-end;
+implementation
 
-procedure WriteStr(Str: PChar); assembler;
-asm
-    push si
-    mov si, Str
-    mov ah, $0E
-@loop:
-    lodsb
-    or al, al
-    jz @done
-    int $10
-    jmp @loop
-@done:
-    pop si
-end;
+uses Fs.Fat, Video;
 
+type
+    TProcedure = procedure;
+
+procedure Main; noreturn; public name '_main';
+var
+    Shell: TProcedure;
 begin
     SetVideoMode($03);
     WriteStr('Brew16 kernel loaded.'#10#13);
+
+    if Fs.Fat.LoadFile('SHELL.BIN', Pointer($500)) <> 0 then
+        WriteStr('Shell loaded.'#10#13)
+    else
+        WriteStr('Failed to load shell.'#10#13);
+
+    Shell := TProcedure(Pointer($500));
+    Shell;
+
+    WriteStr('Shell returned.'#10#13);
+
     while true do;
+end;
+
 end.

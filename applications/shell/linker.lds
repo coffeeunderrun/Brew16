@@ -1,12 +1,11 @@
 OUTPUT_FORMAT(binary)
 
 MEMORY {
-    ram (rwx) : ORIGIN = 0x8000, LENGTH = 32K
+    ram (rwx) : ORIGIN = 0x500, LENGTH = 32K - 0x500
 }
 
 SECTIONS {
-    /* Kernel starts at 0x8000. Kernel will load shell at 0x500. */
-    . = 0x8000;
+    . = 0x500;
 
     .text BLOCK(2) : {
         *(.text.entry)

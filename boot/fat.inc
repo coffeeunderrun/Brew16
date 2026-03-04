@@ -1,5 +1,5 @@
 struc PB
-    .disklabel: resb 8                  ; Disk label
+    .oemname:   resb 8                  ; OEM name
     .sectsize:  resw 1                  ; Bytes per sector
     .clstsects: resb 1                  ; Sectors per cluster
     .rsvdsects: resw 1                  ; Reserved sectors
@@ -14,7 +14,7 @@ struc PB
     .lrgsects:  resd 1                  ; Large sector count
     .drivenum:  resb 1                  ; Drive number
     .reserved:  resb 1                  ; Reserved
-    .drivesig:  resb 1                  ; Drive signature
+    .signature: resb 1                  ; Signature
     .volid:     resd 1                  ; Volume ID
     .vollabel:  resb 11                 ; Volume label
     .fstype:    resb 8                  ; File system type

@@ -7,12 +7,12 @@ KSTART      equ 0x8000
     jmp     short start
     nop
 
-%include "boot/fat.inc"
+%include "fat.inc"
 
 ; Boot Parameter Block
 bpb:
 istruc PB
-    at .disklabel, db "BREW16  "
+    at .oemname, db "BREW16  "
 iend
 
 start:
@@ -129,7 +129,7 @@ load_kernel:
 .calc_data_sector:
     mov     ax, si                      ;   Current cluster
     sub     ax, 2                       ; - 2
-    mov     bl, [bpb + PB.clstsects]    ; * Sectors per cluster
+    mov     bl, [bpb + PB.clstsects]
     xor     bh, bh
     mul     bx                          ; * Sectors per cluster
     add     ax, [datasect]              ; + Data region start sector

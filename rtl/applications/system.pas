@@ -54,9 +54,9 @@ type
                 tkHelper,tkFile,tkClassRef,tkPointer);
 
 var
-  Mem : array [0..$7fff - 1] of Byte absolute $0:$0;
-  MemW : array [0..($7fff div SizeOf(Word)) - 1] of Word absolute $0:$0;
-  MemL : array [0..($7fff div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
+  Mem : array [0..$7FFF - 1] of Byte absolute $0:$0;
+  MemW : array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
+  MemL : array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
 
 const
     {$ifdef FPC_X86_CODE_FAR}
@@ -65,20 +65,11 @@ const
     ExtraParamOffset = 0;
     {$endif FPC_X86_CODE_FAR}
 
-procedure fpc_initializeunits; public name 'FPC_INITIALIZEUNITS'; compilerproc;
-procedure fpc_do_exit; public name 'FPC_DO_EXIT'; compilerproc;
+    MaxSmallint = 32767;
 
 function Ptr(Seg, Off: Word): FarPointer; inline;
 
 implementation
-
-procedure fpc_initializeunits; assembler; nostackframe; compilerproc;
-asm
-end;
-
-procedure fpc_do_exit; assembler; nostackframe; compilerproc;
-asm
-end;
 
 function Ptr(Seg, Off: Word): FarPointer; assembler; nostackframe;
 asm
