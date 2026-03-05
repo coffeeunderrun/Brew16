@@ -10,7 +10,7 @@ override FPCFLAGS += -Cn -Cg-i-o-r-t- -g- -Mobjfpc -n -Pi8086 -Sacg -Tembedded
 
 CC = cc
 CCFLAGS =
-override CCFLAGS += -m16 -march=i8086 -nostdlib -Wl,-Map=memory.map
+override CCFLAGS += -m16 -march=i8086 -nostdlib -Wl,-Map=memory.map -Wl,--gc-sections
 
 QEMU = qemu-system-i386
 QEMUFLAGS = -M q35 -m 16M -net none -serial mon:stdio
@@ -39,5 +39,6 @@ endif
 	@sed -i -E $< \
 		-e '/GROUP[[:space:]]+DGROUP/Id' \
 		-e '/GLOBAL[[:space:]]+RTTI_/i SECTION .rtti' \
-		-e '/GLOBAL[[:space:]]+INIT_/i SECTION .init'
+		-e '/GLOBAL[[:space:]]+INIT_/i SECTION .init' \
+        -e 's/CPU[[:space:]]+8086/CPU 386/ig'
 	$(NASM) $(NASMFLAGS) -w-other -w-zeroing -felf32 -o$@ $<

@@ -1,6 +1,9 @@
 # Brew16
 
-Brew16 is a 16-bit, real mode hobby operating system written in Pascal.
+Brew16 is a 16-bit, real mode hobby operating system written in Pascal and Assembly.
+
+> [!NOTE]
+> While the goal is to use Pascal, many functions will be written in Assembly conserve space.
 
 ## Dependencies
 

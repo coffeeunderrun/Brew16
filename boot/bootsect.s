@@ -1,15 +1,17 @@
 bits 16
 org 0x7C00
 
+; TODO: Most of this code is over a decade old. Review and refactor as needed.
+
 BUFFER      equ 0x500
 KSTART      equ 0x8000
 
     jmp     short start
     nop
 
-%include "fat.inc"
+%include "pb.inc"
 
-; Boot Parameter Block
+; BIOS Parameter Block
 bpb:
 istruc PB
     at .oemname, db "BREW16  "
@@ -236,7 +238,7 @@ calc_chs:
     inc     dl                          ; + 1 (sectors are 1-indexed)
     mov     cl, dl                      ; = Drive sector
     xor     dx, dx
-    div     word [bpb + PB.headcnt]     ; (Logical sector / Sectors per cylinder) % Number of heads
+    div     word [bpb + PB.headcnt]     ;   (Logical sector / Sectors per cylinder) % Number of heads
     mov     dh, dl                      ; = Drive head
     mov     ch, al                      ; = Drive cylinder
     mov     dl, [bpb + PB.drivenum]
