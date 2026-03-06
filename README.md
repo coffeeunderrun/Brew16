@@ -8,11 +8,8 @@ Brew16 is a 16-bit, real mode hobby operating system written in Pascal and Assem
 ## Dependencies
 
 `fpc i8086 cross-compiler`
-
+`open-watcom-v2`
 `nasm`
-
-`gcc`
-(linker)
 
 `make`
 `git`
@@ -24,15 +21,11 @@ Brew16 is a 16-bit, real mode hobby operating system written in Pascal and Assem
 
 ## Build
 
-> Override `DEBUG=0` to perform a release build.
-
 ```bash
 make
 ```
 
 ## Run
-
-> Override `USEGDB=1` to use GDB debugger with QEMU.
 
 ```bash
 make run

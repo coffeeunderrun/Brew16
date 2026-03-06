@@ -2,80 +2,79 @@ unit System;
 
 interface
 
-type
-    DWord    = LongWord;
-    Cardinal = LongWord;
-    Integer  = SmallInt;
-    HResult  = Cardinal;
+{$define FPC_IS_SYSTEM}
+{$define HAS_MEMORYMANAGER}
+{$DEFINE FPC_INCLUDE_SOFTWARE_MUL}
+{$DEFINE FPC_INCLUDE_SOFTWARE_MOD_DIV}
+{$DEFINE FPC_USE_SMALL_DEFAULTSTACKSIZE}
+{$define FPC_ANSI_TEXTFILEREC}
 
-    PChar = ^Char;
+{$I systemh.inc}
+{$I tnyheaph.inc}
+{$I portsh.inc}
 
-    TExceptAddr = record end;
+const
+  LineEnding = #13#10;
+  DirectorySeparator = '\';
+  DriveSeparator = ':';
+  ExtensionSeparator = '.';
+  PathSeparator = ';';
+  AllowDirectorySeparators : set of AnsiChar = ['\', '/'];
+  AllowDriveSeparators : set of AnsiChar = [':'];
+  maxExitCode = 255;
+  MaxPathLen = 256;
 
-    TGuid = packed record case Integer of
-        1: (
-            Data1: DWord;
-            Data2: Word;
-            Data3: Word;
-            Data4: array [0..7] of Byte;
-        );
-        2: (
-            D1: DWord;
-            D2: Word;
-            D3: Word;
-            D4: array [0..7] of Byte;
-        );
-        3: (
-            time_low: DWord;
-            time_mid: Word;
-            time_hi_and_version: Word;
-            clock_seq_hi_and_reserved: Byte;
-            clock_seq_low: Byte;
-            node: array [0..5] of Byte;
-        );
-    end;
+  UnusedHandle    = $ffff;
+  StdInputHandle  = 0;
+  StdOutputHandle = 1;
+  StdErrorHandle  = 2;
 
-    jmp_buf = packed record
-        bp,sp: Word;
-        ip: Word;
-        {$ifdef FPC_X86_CODE_FAR}
-        cs: Word;
-        {$endif FPC_X86_CODE_FAR}
-    end;
+  FileNameCaseSensitive : boolean = false;
+  FileNameCasePreserving: boolean = false;
+  CtrlZMarksEOF: boolean = true;
 
-    FileRec = record end;
-    TextRec = record end;
+  sLineBreak = LineEnding;
+  DefaultTextLineBreakStyle : TTextLineBreakStyle = tlbsCRLF;
 
-    TTypeKind = (tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,
-                tkSet,tkMethod,tkSString,tkLString,tkAString,
-                tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
-                tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
-                tkHelper,tkFile,tkClassRef,tkPointer);
+  SelectorInc: Word = $1000;
 
 var
   Mem : array [0..$7FFF - 1] of Byte absolute $0:$0;
   MemW : array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
   MemL : array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
 
-const
-    {$ifdef FPC_X86_CODE_FAR}
-    ExtraParamOffset = 2;
-    {$else FPC_X86_CODE_FAR}
-    ExtraParamOffset = 0;
-    {$endif FPC_X86_CODE_FAR}
-
-    MaxSmallint = 32767;
-
-function Ptr(Seg, Off: Word): FarPointer; inline;
-
 implementation
 
-function Ptr(Seg, Off: Word): FarPointer; assembler; nostackframe;
-asm
-    mov si, sp
-    mov ax, ss:[si + 2 + ExtraParamOffset] // Offset
-    mov dx, ss:[si + 4 + ExtraParamOffset] // Segment
+const
+  extra_param_offset = 0;
+  extra_data_offset = 0;
+
+var
+  __stktop : pointer; public name '__stktop';
+  __stkbottom : pointer; public name '__stkbottom';
+  __nearheap_start: pointer; public name '__nearheap_start';
+  __nearheap_end: pointer; public name '__nearheap_end';
+
+{$I system.inc}
+{$I tinyheap.inc}
+{$I ports.inc}
+
+procedure system_exit; external name '_exit';
+
+Procedure ChDir(const s:shortstring);
+begin
+end;
+
+Procedure MkDir(const s:shortstring);
+begin
+end;
+
+Procedure RmDir(const s:shortstring);
+begin
+end;
+
+Procedure GetDir(drivenr:byte;var dir:shortstring);
+begin
 end;
 
 end.

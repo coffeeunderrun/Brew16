@@ -1,8 +1,4 @@
-unit Shell;
-
-interface
-
-implementation
+program Shell;
 
 procedure WriteStr(Str: PChar); assembler;
 asm
@@ -19,9 +15,6 @@ asm
     pop si
 end;
 
-procedure Main; public name '_main';
 begin
     WriteStr('Shell called.'#10#13);
-end;
-
 end.

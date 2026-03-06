@@ -87,10 +87,6 @@ var
 
 function TDriveContext.Initialize(Drive: Byte): TDriveStatus; assembler;
 asm
-    push    bx
-    push    di
-    push    si
-
     mov     ah, $08
     mov     dl, Drive
     mov     si, Self                            // Drive context self-pointer
@@ -120,16 +116,10 @@ asm
     mul     bl                                  // * Sectors per track
     mov     [si + SectorsPerCylinder], ax
     mov     ax, cx                              // Restore Int 13h return value
-
-    pop     si
-    pop     di
-    pop     bx
 end;
 
 function TDriveContext.ReadSectors(Lba: Word; Count: Byte; const BufferPtr: Pointer): Byte; assembler;
 asm
-    push    bx
-    push    si
     mov     si, Self
 
     mov     ax, Lba
@@ -155,9 +145,6 @@ asm
     mov     bx, BufferPtr
     mov     dl, [si + DriveNumber]
     int     $13
-
-    pop     si
-    pop     bx
 end;
 
 function LoadFile(const Path: PChar; const DestPtr: Pointer): Byte;
@@ -170,20 +157,23 @@ begin
         if Initialize(0) <> 0 then exit(0);
 
         if ReadSectors(0, 1, @Buffer) = 0 then exit(0);
-        Bpb := PBiosParameterBlock(@Buffer)^;
+        Move(Buffer, Bpb, SizeOf(TBiosParameterBlock));
 
         RootDirectoryLba := Bpb.ReservedSectors + Bpb.FatCount * Bpb.SectorsPerFat;
         if ReadSectors(RootDirectoryLba, 1, @Buffer) = 0 then exit(0);
 
+        Cluster := 0;
         for EntryIndex := 0 to Bpb.RootDirectoryEntryCount - 1 do with PDirectoryEntry(@Buffer)[EntryIndex] do begin
-            if Name[0] <> Path[0] then continue;
+            if Attributes = 0 then continue;
+            if CompareChar(Name[0], Path[0], 11) <> 0 then continue;
             Cluster := FirstClusterLow;
             break;
         end;
+        if Cluster = 0 then exit(0);
 
         DataRegionLba := RootDirectoryLba + (Word(Bpb.RootDirectoryEntryCount * 32 + Bpb.BytesPerSector - 1) div Bpb.BytesPerSector);
         FileDataLba := DataRegionLba + ((Cluster - 2) * Bpb.SectorsPerCluster);
-        result := ReadSectors(FileDataLba, Bpb.SectorsPerCluster, DestPtr);
+        LoadFile := ReadSectors(FileDataLba, Bpb.SectorsPerCluster, DestPtr);
     end;
 end;
 

@@ -1,0 +1,17 @@
+FORMAT RAW BIN
+
+OPTION START=_start
+OPTION OFFSET=0x8000
+
+OPTION NODEFAULTLIBS
+OPTION ELIMINATE
+OPTION SHOWDEAD
+
+OPTION MAP=kernel.map
+
+ORDER
+    clname CODE
+    clname DATA
+    clname BSS
+    clname STACK
+    clname HEAP

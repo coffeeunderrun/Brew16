@@ -2,20 +2,22 @@
 
 include ../../vars.mk
 
-RTLDIR := ../../rtl/applications/bin
+RTLBIN := ../../rtl/applications/bin
 
-OBJS := $(RTLDIR)/system.o entry.o bin/shell.o
+LIBS := $(RTLBIN)/system.a
+LIBS += bin/shell.a
+OBJS := $(RTLBIN)/prt0.o
 
 .PHONY: all
 all: $(BINDIR)/shell.bin
 
 .PHONY: clean
 clean:
-	rm -rf bin *.o *.map
+	rm -rf bin *.map
 
-$(BINDIR)/shell.bin: linker.lds $(OBJS)
-	$(CC) $(CCFLAGS) -T$< -o$@ $(OBJS)
+$(BINDIR)/%.bin: %.lnk $(OBJS) $(LIBS)
+	$(WLINK) $(WLINKFLAGS) @$< file { $(OBJS) } library { $(LIBS) } name $@
 
-bin/shell.s: shell.pas
+bin/%.a: %.pas
 	mkdir -p $(dir $@)
-	$(FPC) $(FPCFLAGS) -a -s -Anasm -FE$(dir $@) -Fu$(RTLDIR) $<
+	$(FPC) $(FPCFLAGS) -FE$(dir $@) -Fu$(RTLBIN) $<

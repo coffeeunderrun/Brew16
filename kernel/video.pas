@@ -6,7 +6,9 @@ procedure SetVideoMode(Mode: Byte); register; inline;
 
 procedure WriteChar(C: Char); register; inline;
 
-procedure WriteStr(Str: PChar);
+procedure WritePChar(Str: PChar);
+
+procedure WriteString(const Str: String); inline;
 
 implementation
 
@@ -22,7 +24,7 @@ asm
     int     $10
 end;
 
-procedure WriteStr(Str: PChar); assembler;
+procedure WritePChar(Str: PChar); assembler;
 asm
     push    si
     mov     si, Str
@@ -35,6 +37,13 @@ asm
     jmp     @loop
 @done:
     pop     si
+end;
+
+procedure WriteString(const Str: String);
+var
+    C: Char;
+begin
+    for C in Str do WriteChar(C);
 end;
 
 end.
