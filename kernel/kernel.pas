@@ -1,29 +1,18 @@
 program Kernel;
 
-uses Fs.Fat, Video;
-
-type
-    TProcedure = procedure;
-
-procedure Main;
+procedure WriteStr(C: PChar);
 var
-    Shell: TProcedure;
+    Offset: Word;
 begin
-    SetVideoMode($03);
-    WritePChar('Brew16 kernel loaded.'#10#13);
-
-    if Fs.Fat.LoadFile('SHELL   BIN', Pointer($500)) <> 0 then
-        WritePChar('Shell loaded.'#10#13)
-    else
-        WritePChar('Failed to load shell.'#10#13);
-
-    Shell := TProcedure(Pointer($500));
-    Shell;
-
-    WritePChar('Shell returned.'#10#13);
+    Offset := 0;
+    while C^ <> #0 do begin
+        Mem[$B800:Offset] := Ord(C^);
+        Mem[$B800:Offset + 1] := $4F;
+        Inc(Offset, 2);
+        Inc(C);
+    end;
 end;
 
 begin
-    Main;
-    while true do;
+    WriteStr('Brew16 kernel loaded!');
 end.

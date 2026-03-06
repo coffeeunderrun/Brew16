@@ -3,7 +3,7 @@ NASMFLAGS = -Ox
 
 FPC = fpc
 FPCFLAGS = -O3
-override FPCFLAGS += -CnX -Cp80386 -Cg-i-o-r-t- -n -Pi8086 -Scgi -Tembedded -Wmtiny -XdsX
+override FPCFLAGS += -CnX -Cp80286 -Cg-i-o-r-t- -n -Pi8086 -Scgi -Tembedded -Wmsmall -XdsX
 
 WLINK = wlink
 WLINKFLAGS =

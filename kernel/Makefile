@@ -5,8 +5,8 @@ include ../vars.mk
 RTLBIN := ../rtl/kernel/bin
 
 LIBS := $(RTLBIN)/system.a
-LIBS += bin/kernel.a bin/video.a bin/fs.fat.a
-OBJS := $(RTLBIN)/prt0.o
+LIBS += bin/kernel.a
+OBJS := bin/entry.o
 
 .PHONY: all
 all: $(BINDIR)/kernel.bin
@@ -21,3 +21,7 @@ $(BINDIR)/%.bin: %.lnk $(OBJS) $(LIBS)
 bin/%.a: %.pas
 	mkdir -p $(dir $@)
 	$(FPC) $(FPCFLAGS) -FE$(dir $@) -Fu$(RTLBIN) $<
+
+bin/%.o: %.s
+	mkdir -p $(dir $@)
+	$(NASM) $(NASMFLAGS) -fobj $< -o$@
