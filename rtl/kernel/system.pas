@@ -1,89 +1,71 @@
 unit System;
 
-{$POINTERMATH OFF}
+{$implicitexceptions off}
 
 interface
 
-type
-    DWord    = LongWord;
-    Cardinal = LongWord;
-    Integer  = SmallInt;
-    HResult  = Cardinal;
+{$define FPC_SYSTEM_HAS_STACKTOP}
 
-    PChar = ^Char;
-    Char = AnsiChar;
+{$define FPC_IS_SYSTEM}
 
-    TExceptAddr = record end;
+{$define DISABLE_NO_THREAD_MANAGER}
+{ Do not use standard memory manager }
+{$define HAS_MEMORYMANAGER}
+{$define FPC_NO_DEFAULT_HEAP}
 
-    TGuid = packed record case Integer of
-        1: (
-            Data1: DWord;
-            Data2: Word;
-            Data3: Word;
-            Data4: array [0..7] of Byte;
-        );
-        2: (
-            D1: DWord;
-            D2: Word;
-            D3: Word;
-            D4: array [0..7] of Byte;
-        );
-        3: (
-            time_low: DWord;
-            time_mid: Word;
-            time_hi_and_version: Word;
-            clock_seq_hi_and_reserved: Byte;
-            clock_seq_low: Byte;
-            node: array [0..5] of Byte;
-        );
-    end;
+{$define FPC_ANSI_TEXTFILEREC}
 
-    jmp_buf = packed record
-        bp,sp: Word;
-        ip: Word;
-    end;
+{ make output and stdout as well as input and stdin equal to save memory }
+{$define FPC_STDOUT_TRUE_ALIAS}
 
-    FileRec = record end;
-    TextRec = record end;
+{$define FPC_INCLUDE_SOFTWARE_MUL}
+{$define FPC_INCLUDE_SOFTWARE_MOD_DIV}
 
-    TTypeKind = (tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,
-                tkSet,tkMethod,tkSString,tkLString,tkAString,
-                tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
-                tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
-                tkHelper,tkFile,tkClassRef,tkPointer);
-
-var
-    Mem : array [0..$7FFF - 1] of Byte absolute $0:$0;
-    MemW : array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
-    MemL : array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
-
-    CodeSel: Word; external name '_code_sel';
-    DataSel: Word; external name '_data_sel';
-    VMemSel: Word; external name '_vmem_sel';
+{$I systemh.inc}
 
 const
-    ExtraParamOffset = 0;
-    MaxSmallint = 32767;
+    LineEnding = #10;
+    DefaultTextLineBreakStyle: TTextLineBreakStyle = tlbsCrLF;
+    CtrlZMarksEOF: Boolean = false; (* #26 not considered as end of file *)
 
-procedure fpc_initializeunits; compilerproc; public name 'FPC_INITIALIZEUNITS';
-procedure fpc_do_exit; compilerproc; public name 'FPC_DO_EXIT';
+    DirectorySeparator = '/';
+    AllowDirectorySeparators: set of AnsiChar = ['\', '/'];
+    AllowDriveSeparators: set of AnsiChar = [':'];
 
-function Ptr(Seg, Off: Word): FarPointer; inline;
+    UnusedHandle    = -1;
+    StdInputHandle  = 0;
+    StdOutputHandle = 1;
+    StdErrorHandle  = 2;
+
+    SysSelector  = $8;
+    CodeSelector = $10;
+    DataSelector = $18;
+    VMemSelector = $20;
+
+    extra_param_offset = 0;
+    extra_data_offset  = 0;
+
+    SelectorInc: Word = $8; // GDT entries are 8 bytes
+
+var
+    Mem: array [0..$7FFF - 1] of Byte absolute $0:$0;
+    MemW: array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
+    MemL: array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
 
 implementation
 
-procedure fpc_initializeunits; assembler; nostackframe; compilerproc;
-asm
+var
+    __stktop: record end; external name '_stack_top';
+    __stkbottom: record end; external name '_stack_bottom';
+
+{$define FPC_SYSTEM_EXIT_NO_RETURN}
+{$I system.inc}
+
+function StackTop: pointer;
+begin
+    StackTop := @__stktop;
 end;
 
-procedure fpc_do_exit; compilerproc; external name '_halt';
-
-function Ptr(Seg, Off: Word): FarPointer; assembler; nostackframe;
-asm
-    mov si, sp
-    mov ax, ss:[si + 2 + ExtraParamOffset] // Offset
-    mov dx, ss:[si + 4 + ExtraParamOffset] // Segment
-end;
+procedure system_exit; noreturn; external name '_halt';
 
 end.

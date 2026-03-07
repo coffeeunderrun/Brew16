@@ -6,8 +6,8 @@ var
 begin
     Offset := 0;
     while C^ <> #0 do begin
-        Mem[VMemSel:Offset] := Ord(C^);
-        Mem[VMemSel:Offset + 1] := $4F;
+        Mem[VMemSelector:Offset] := Ord(C^);
+        Mem[VMemSelector:Offset + 1] := $4F;
         Inc(Offset, 2);
         Inc(C);
     end;

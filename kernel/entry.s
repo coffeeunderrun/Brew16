@@ -30,7 +30,7 @@ _entry:
     call    _gdt_init
 
     ; Now in protected mode.
-    mov     ax, [_data_sel]
+    mov     ax, 0x18
     mov     ds, ax
     mov     es, ax
     mov     ss, ax

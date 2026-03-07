@@ -6,7 +6,7 @@ RTLBIN := ../rtl/kernel/bin
 
 LIBS := $(RTLBIN)/system.a
 LIBS += bin/kernel.a
-OBJS := bin/entry.o bin/gdt.o
+OBJS := bin/entry.o bin/cpu/gdt.o
 
 .PHONY: all
 all: $(BINDIR)/kernel.bin
