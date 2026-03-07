@@ -186,6 +186,10 @@ load_kernel:
     jmp     reboot_wait
 
 .done:
+    mov     ax, 0x1000
+    mov     ds, ax
+    mov     es, ax
+    mov     ss, ax
     jmp     0x1000:0                    ; Jump to kernel entry point
 
 ; Print string to screen.

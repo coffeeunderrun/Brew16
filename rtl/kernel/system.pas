@@ -54,9 +54,13 @@ type
                 tkHelper,tkFile,tkClassRef,tkPointer);
 
 var
-  Mem : array [0..$7FFF - 1] of Byte absolute $0:$0;
-  MemW : array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
-  MemL : array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
+    Mem : array [0..$7FFF - 1] of Byte absolute $0:$0;
+    MemW : array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
+    MemL : array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
+
+    CodeSel: Word; external name '_code_sel';
+    DataSel: Word; external name '_data_sel';
+    VMemSel: Word; external name '_vmem_sel';
 
 const
     ExtraParamOffset = 0;
@@ -73,9 +77,7 @@ procedure fpc_initializeunits; assembler; nostackframe; compilerproc;
 asm
 end;
 
-procedure fpc_do_exit; assembler; nostackframe; compilerproc;
-asm
-end;
+procedure fpc_do_exit; compilerproc; external name '_halt';
 
 function Ptr(Seg, Off: Word): FarPointer; assembler; nostackframe;
 asm
