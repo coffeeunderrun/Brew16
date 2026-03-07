@@ -1,7 +1,7 @@
 BITS 16
 CPU 286
 
-GDT_START equ 0x1000
+GDT_START equ 0x800
 GDT_SIZE  equ 0x1000
 
 GROUP DGROUP _TEXT
@@ -9,7 +9,7 @@ SECTION _TEXT class=CODE group=DGROUP
 
 GLOBAL _gdt_init
 _gdt_init:
-    mov     ax, GDT_START >> 4          ; Segment = GDT_START / 16, i.e., 100:0000h
+    mov     ax, GDT_START >> 4          ; Segment = GDT_START / 16, i.e., 80:0000h
     mov     es, ax
 
     ; Zero out GDT.
