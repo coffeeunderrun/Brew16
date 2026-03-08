@@ -22,6 +22,7 @@ interface
 {$define FPC_INCLUDE_SOFTWARE_MOD_DIV}
 
 {$I systemh.inc}
+{$I portsh.inc}
 
 const
     LineEnding = #10;
@@ -48,7 +49,7 @@ const
     SelectorInc: Word = $8; // GDT entries are 8 bytes
 
 var
-    Mem: array [0..$7FFF - 1] of Byte absolute $0:$0;
+    Mem:  array [0..$7FFF - 1] of Byte absolute $0:$0;
     MemW: array [0..($7FFF div SizeOf(Word)) - 1] of Word absolute $0:$0;
     MemL: array [0..($7FFF div SizeOf(LongInt)) - 1] of LongInt absolute $0:$0;
 
@@ -60,6 +61,7 @@ var
 
 {$define FPC_SYSTEM_EXIT_NO_RETURN}
 {$I system.inc}
+{$I ports.inc}
 
 function StackTop: pointer;
 begin

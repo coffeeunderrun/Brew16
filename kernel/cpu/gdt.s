@@ -20,7 +20,7 @@ _gdt_init:
 
     ; TODO: these could be rearranged to reduce MOVs
 
-    ; Null descriptor (also GDT pointer)
+    ; Null descriptor (also GDTR)
     xor     di, di
     xor     ax, ax
     xor     bx, bx
@@ -57,7 +57,7 @@ _gdt_init:
     mov     cx, 0x8000
     call    set_gdt_entry
 
-    lgdt    [es:0]                      ; GDT null descriptor is also GDT pointer
+    lgdt    [es:0]                      ; GDT null descriptor is also GDTR
 
     smsw    ax
     or      ax, 1                       ; Set protection enable bit

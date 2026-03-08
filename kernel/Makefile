@@ -5,7 +5,7 @@ include ../vars.mk
 RTLBIN := ../rtl/kernel/bin
 
 LIBS := $(RTLBIN)/system.a
-LIBS += bin/kernel.a
+LIBS += bin/kernel.a bin/interrupts.a bin/device/pic.a
 OBJS := bin/entry.o bin/cpu/gdt.o
 
 .PHONY: all
@@ -20,7 +20,7 @@ $(BINDIR)/%.bin: %.lnk $(OBJS) $(LIBS)
 
 bin/%.a: %.pas
 	mkdir -p $(dir $@)
-	$(FPC) $(FPCFLAGS) -FE$(dir $@) -Fu$(RTLBIN) $<
+	$(FPC) $(FPCFLAGS) -FE$(dir $@) -Fu$(RTLBIN) -Fudevice $<
 
 bin/%.o: %.s
 	mkdir -p $(dir $@)
