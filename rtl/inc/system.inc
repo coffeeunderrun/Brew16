@@ -2236,3 +2236,4 @@ begin
   CtrlBreakHandler := Handler;
 end;
 {$ENDIF FPC_HAS_SETCTRLBREAKHANDLER}
+

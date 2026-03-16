@@ -4,7 +4,6 @@ org 0x7C00
 ; TODO: Most of this code is over a decade old. Review and refactor as needed.
 
 BUFFER      equ 0x500
-KSTART      equ 0x8000
 
     jmp     short start
     nop
@@ -26,16 +25,18 @@ start:
 load_cs:
     xor     ax, ax
     mov     ds, ax
+    mov     es, ax
     mov     ss, ax
-    mov     sp, KSTART                  ; Set stack top to bottom of kernel
+    mov     sp, ax                      ; Set stack top to top of segment
+    sti
 
 get_drive_params:
     xor     di, di
     mov     ah, 8                       ; Read Drive Parameters (INT 13h)
     mov     [bpb + PB.drivenum], dl     ; BIOS loads DL with drive number at boot
+    push    es                          ; BIOS will change ES
     int     0x13
-    xor     ax, ax                      ; BIOS could change ES
-    mov     es, ax
+    pop     es
     jnc     .ready
 
     mov     si, badboot
@@ -126,7 +127,9 @@ load_fat:
 
 ; Expects SI to contain the start cluster from find_kernel.
 load_kernel:
-    mov     di, KSTART                  ; Kernel load destination
+    xor     di, di                      ; Kernel load destination (1000:0000h)
+    mov     ax, 0x1000
+    mov     es, ax
 
 .calc_data_sector:
     mov     ax, si                      ;   Current cluster
@@ -183,7 +186,11 @@ load_kernel:
     jmp     reboot_wait
 
 .done:
-    jmp     0:KSTART                    ; Jump to kernel entry point
+    mov     ax, 0x1000
+    mov     ds, ax
+    mov     es, ax
+    mov     ss, ax
+    jmp     0x1000:0                    ; Jump to kernel entry point
 
 ; Print string to screen.
 ; Input:  SI - pointer to string

@@ -14,101 +14,75 @@
 
  **********************************************************************}
 
+{ TODO: Revisit these for protected mode to handle LDT selectors. }
+
 function fpc_hugeptr_add_longint(p: HugePointer; n: LongInt): HugePointer; compilerproc;
-var
-  o: LongInt;
 begin
-  o:=LongInt(Ofs(p^))+n;
-  fpc_hugeptr_add_longint:=HugePointer(Ptr(Seg(p^)+SelectorInc*SmallInt(o shr 16),o and $FFFF));
+  fpc_hugeptr_add_longint := nil;
 end;
 
 function fpc_hugeptr_add_longint_normalized(p: HugePointer; n: LongInt): HugePointer; compilerproc;
-var
-  linear: LongInt;
 begin
-  linear:=(LongInt(Seg(p^)) shl 4)+Ofs(p^)+n;
-  fpc_hugeptr_add_longint_normalized:=HugePointer(Ptr(linear shr 4,linear and $F));
+  fpc_hugeptr_add_longint_normalized := nil;
 end;
 
 function fpc_hugeptr_sub_longint(p: HugePointer; n: LongInt): HugePointer; compilerproc;
-var
-  o: LongInt;
 begin
-  o:=LongInt(Ofs(p^))-n;
-  fpc_hugeptr_sub_longint:=HugePointer(Ptr(Seg(p^)+SelectorInc*SmallInt(o shr 16),o and $FFFF));
+  fpc_hugeptr_sub_longint := nil;
 end;
 
 function fpc_hugeptr_sub_longint_normalized(p: HugePointer; n: LongInt): HugePointer; compilerproc;
-var
-  linear: LongInt;
 begin
-  linear:=(LongInt(Seg(p^)) shl 4)+Ofs(p^)-n;
-  fpc_hugeptr_sub_longint_normalized:=HugePointer(Ptr(linear shr 4,linear and $F));
+  fpc_hugeptr_sub_longint_normalized := nil;
 end;
 
 function fpc_hugeptr_sub_hugeptr(p1, p2: HugePointer): LongInt; compilerproc;
 begin
-  fpc_hugeptr_sub_hugeptr:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))-((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_sub_hugeptr := 0;
 end;
 
 procedure fpc_hugeptr_inc_longint(var p: HugePointer; n: LongInt); compilerproc;
-var
-  o: LongInt;
 begin
-  o:=LongInt(Ofs(p^))+n;
-  p:=HugePointer(Ptr(Seg(p^)+SelectorInc*SmallInt(o shr 16),o and $FFFF));
 end;
 
 procedure fpc_hugeptr_inc_longint_normalized(var p: HugePointer; n: LongInt); compilerproc;
-var
-  linear: LongInt;
 begin
-  linear:=(LongInt(Seg(p^)) shl 4)+Ofs(p^)+n;
-  p:=HugePointer(Ptr(linear shr 4,linear and $F));
 end;
 
 procedure fpc_hugeptr_dec_longint(var p: HugePointer; n: LongInt); compilerproc;
-var
-  o: LongInt;
 begin
-  o:=LongInt(Ofs(p^))-n;
-  p:=HugePointer(Ptr(Seg(p^)+SelectorInc*SmallInt(o shr 16),o and $FFFF));
 end;
 
 procedure fpc_hugeptr_dec_longint_normalized(var p: HugePointer; n: LongInt); compilerproc;
-var
-  linear: LongInt;
 begin
-  linear:=(LongInt(Seg(p^)) shl 4)+Ofs(p^)-n;
-  p:=HugePointer(Ptr(linear shr 4,linear and $F));
 end;
 
 function fpc_hugeptr_cmp_normalized_e(p1, p2: HugePointer): Boolean; compilerproc;
 begin
-  fpc_hugeptr_cmp_normalized_e:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))=((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_cmp_normalized_e := false;
 end;
 
 function fpc_hugeptr_cmp_normalized_ne(p1, p2: HugePointer): Boolean; compilerproc;
 begin
-  fpc_hugeptr_cmp_normalized_ne:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))<>((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_cmp_normalized_ne := false;
 end;
 
 function fpc_hugeptr_cmp_normalized_b(p1, p2: HugePointer): Boolean; compilerproc;
 begin
-  fpc_hugeptr_cmp_normalized_b:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))<((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_cmp_normalized_b := false;
 end;
 
 function fpc_hugeptr_cmp_normalized_be(p1, p2: HugePointer): Boolean; compilerproc;
 begin
-  fpc_hugeptr_cmp_normalized_be:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))<=((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_cmp_normalized_be := false;
 end;
 
 function fpc_hugeptr_cmp_normalized_a(p1, p2: HugePointer): Boolean; compilerproc;
 begin
-  fpc_hugeptr_cmp_normalized_a:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))>((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_cmp_normalized_a := false;
 end;
 
 function fpc_hugeptr_cmp_normalized_ae(p1, p2: HugePointer): Boolean; compilerproc;
 begin
-  fpc_hugeptr_cmp_normalized_ae:=((LongInt(Seg(p1^)) shl 4)+Ofs(p1^))>=((LongInt(Seg(p2^)) shl 4)+Ofs(p2^));
+  fpc_hugeptr_cmp_normalized_ae := false;
 end;
